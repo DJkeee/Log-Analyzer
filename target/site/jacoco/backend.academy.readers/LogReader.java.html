@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LogReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java</a> &gt; <a href="index.source.html" class="el_package">backend.academy.readers</a> &gt; <span class="el_source">LogReader.java</span></div><h1>LogReader.java</h1><pre class="source lang-java linenums">package backend.academy.readers;
+
+import backend.academy.nginx.NginxLog;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Класс LogReader предназначен для чтения логов из различных источников.
+ * Он наследует функциональность абстрактного класса AbstractLogReader и
+ * определяет метод для чтения логов из списка указанных путей.
+ */
+<span class="nc" id="L13">public final class LogReader extends AbstractLogReader {</span>
+
+    /**
+     * Читает логи из заданных путей. В зависимости от формата пути (URL или файл),
+     * создаётся соответствующий лог-ридер (LogUrlReader или LogFileReader).
+     *
+     * @param paths Список строк, представляющих пути к логам (файлы или URL-адреса).
+     * @return Список объектов NginxLog, содержащих прочитанные записи логов.
+     * @throws IOException Если произошла ошибка ввода-вывода при чтении данных.
+     */
+    @Override
+    public List&lt;NginxLog&gt; readLogs(List&lt;String&gt; paths) throws IOException {
+<span class="nc" id="L25">        List&lt;NginxLog&gt; allLogs = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        for (String path : paths) {</span>
+<span class="nc" id="L28">            AbstractLogReader logReader = createLogReader(path);</span>
+            // Передаем только текущий путь в readLogs
+<span class="nc" id="L30">            List&lt;NginxLog&gt; logs = logReader.readLogs(List.of(path));</span>
+<span class="nc" id="L31">            allLogs.addAll(logs);</span>
+<span class="nc" id="L32">        }</span>
+
+<span class="nc" id="L34">        return allLogs;</span>
+    }
+
+    /**
+     * Создаёт экземпляр лог-ридера в зависимости от формата указанного пути.
+     * Если путь начинается с &quot;http://&quot; или &quot;https://&quot;, возвращает экземпляр LogUrlReader.
+     * В противном случае возвращает экземпляр LogFileReader.
+     *
+     * @param path Путь к логам, который необходимо проверить.
+     * @return Экземпляр AbstractLogReader, соответствующий указанному пути.
+     */
+    private AbstractLogReader createLogReader(String path) {
+<span class="nc bnc" id="L46" title="All 4 branches missed.">        if (path.startsWith(&quot;http://&quot;) || path.startsWith(&quot;https://&quot;)) {</span>
+<span class="nc" id="L47">            return new LogUrlReader();</span>
+        } else {
+<span class="nc" id="L49">            return new LogFileReader();</span>
+        }
+    }
+}
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

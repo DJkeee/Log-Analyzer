@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AbstractWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java</a> &gt; <a href="index.source.html" class="el_package">backend.academy.writers</a> &gt; <span class="el_source">AbstractWriter.java</span></div><h1>AbstractWriter.java</h1><pre class="source lang-java linenums">package backend.academy.writers;
+
+import backend.academy.statistic.Metrics;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import static backend.academy.config.ErrorMessages.FILE_WRITE_ERROR;
+
+/**
+ * Абстрактный класс для записи отчетов.
+ *
+ * &lt;p&gt;Этот класс предоставляет метод для форматирования метрик и записи отчета в файл.
+ * Он использует автоматическое управление ресурсами с помощью конструкции try-with-resources,
+ * что гарантирует закрытие {@link BufferedWriter} после завершения работы с ним,
+ * даже если возникает исключение во время записи.&lt;/p&gt;
+ */
+<span class="nc" id="L19">public abstract class AbstractWriter {</span>
+    private static final String SUCCESS_WRITE_MESSAGE = &quot;Отчет успешно записан по пути &quot;;
+<span class="nc" id="L21">    private static final PrintWriter PRINT = new PrintWriter(System.out, true, StandardCharsets.UTF_8);</span>
+
+    /**
+     * Форматирует метрики в строку для отчета.
+     *
+     * @param metrics Метрики, которые необходимо отформатировать.
+     * @return Строка, представляющая отформатированные метрики.
+     */
+    public abstract String format(Metrics metrics);
+
+    /**
+     * Записывает отчет в указанный файл.
+     *
+     * &lt;p&gt;Метод форматирует метрики, а затем записывает результат в файл,
+     * путь к которому передан в качестве параметра. Если запись успешна,
+     * выводится сообщение об успешной записи. В случае ошибки при записи
+     * выводится сообщение об ошибке.&lt;/p&gt;
+     *
+     * @param metrics  Метрики, которые необходимо записать в файл.
+     * @param filePath Путь к файлу, в который будет записан отчет.
+     */
+    public void writeReportToFile(Metrics metrics, String filePath) {
+<span class="nc" id="L43">        String reportContent = format(metrics);</span>
+
+<span class="nc" id="L45">        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, StandardCharsets.UTF_8))) {</span>
+<span class="nc" id="L46">            writer.write(reportContent);</span>
+<span class="nc" id="L47">            PRINT.println(SUCCESS_WRITE_MESSAGE + filePath);</span>
+<span class="nc" id="L48">        } catch (IOException e) {</span>
+<span class="nc" id="L49">            System.err.println(FILE_WRITE_ERROR + e.getMessage());</span>
+<span class="nc" id="L50">        }</span>
+<span class="nc" id="L51">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

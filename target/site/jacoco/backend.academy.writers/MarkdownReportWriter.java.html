@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>MarkdownReportWriter.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java</a> &gt; <a href="index.source.html" class="el_package">backend.academy.writers</a> &gt; <span class="el_source">MarkdownReportWriter.java</span></div><h1>MarkdownReportWriter.java</h1><pre class="source lang-java linenums">package backend.academy.writers;
+
+import backend.academy.reportformats.MarkdownFormater;
+import backend.academy.statistic.Metrics;
+
+/**
+ * Класс {@code MarkdownReportWriter} отвечает за форматирование и запись отчетов в формате Markdown.
+ *
+ * &lt;p&gt;Этот класс наследует от {@link AbstractWriter} и использует {@link MarkdownFormater} для
+ * преобразования метрик в строку формата Markdown.&lt;/p&gt;
+ *
+ * &lt;p&gt;При создании экземпляра класса {@code MarkdownReportWriter} автоматически инициализируется
+ * экземпляр {@code MarkdownFormater} для выполнения форматирования.&lt;/p&gt;
+ *
+ * &lt;p&gt;Основное предназначение этого класса - предоставление возможности форматирования
+ * данных метрик в удобочитаемый вид для дальнейшей записи в файл или отображения.&lt;/p&gt;
+ */
+public class MarkdownReportWriter extends AbstractWriter {
+
+    private final MarkdownFormater markdownFormater;
+
+<span class="nc" id="L22">    public MarkdownReportWriter() {</span>
+<span class="nc" id="L23">        this.markdownFormater = new MarkdownFormater();</span>
+<span class="nc" id="L24">    }</span>
+
+    /**
+     * Форматирует переданные метрики в строку формата Markdown.
+     *
+     * @param metrics объект типа {@link Metrics}, содержащий данные метрик, которые необходимо
+     *                отформатировать.
+     * @return строка, представляющая отформатированные метрики в формате Markdown.
+     */
+    @Override
+    public String format(Metrics metrics) {
+<span class="nc" id="L35">        return markdownFormater.format(metrics);</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

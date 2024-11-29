@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Analyzer.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java</a> &gt; <a href="index.source.html" class="el_package">backend.academy.analyzer</a> &gt; <span class="el_source">Analyzer.java</span></div><h1>Analyzer.java</h1><pre class="source lang-java linenums">package backend.academy.analyzer;
+
+import backend.academy.nginx.NginxLog;
+import backend.academy.statistic.Metrics;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * Класс Analyzer предоставляет интерфейс для анализа логов Nginx.
+ * &lt;p&gt;
+ * Он расширяет функциональность класса {@link AnalyzerLogic} и включает методы
+ * для анализа логов с различными параметрами фильтрации, такими как временные
+ * рамки и ресурсы.
+ * &lt;/p&gt;
+ */
+public final class Analyzer extends AnalyzerLogic {
+
+<span class="fc" id="L18">    public Analyzer() {</span>
+<span class="fc" id="L19">    }</span>
+
+    /**
+     * Анализирует список логов Nginx без фильтрации.
+     *
+     * @param logs Список логов Nginx для анализа.
+     * @return Объект Metrics, содержащий результаты анализа.
+     */
+    public Metrics analyze(List&lt;NginxLog&gt; logs) {
+<span class="fc" id="L28">        return analyzeLogs(logs.stream());</span>
+    }
+
+    /**
+     * Анализирует список логов Nginx с фильтрацией по временным рамкам.
+     *
+     * @param logs      Список логов Nginx для анализа.
+     * @param startDate Дата начала фильтрации в формате &quot;dd/MMM/yyyy:HH:mm:ss Z&quot;.
+     * @param endDate   Дата окончания фильтрации в формате &quot;dd/MMM/yyyy:HH:mm:ss Z&quot;.
+     * @return Объект Metrics, содержащий результаты анализа с учетом временного фильтра.
+     */
+    public Metrics analyze(List&lt;NginxLog&gt; logs, String startDate, String endDate) {
+<span class="fc" id="L40">        return analyzeLogsWithDateFilter(logs.stream(), startDate, endDate);</span>
+    }
+
+    /**
+     * Анализирует список логов Nginx с фильтрацией по ресурсам.
+     *
+     * @param logs    Список логов Nginx для анализа.
+     * @param filters Карта фильтров, где ключи представляют собой имена ресурсов,
+     *                а значения — соответствующие условия фильтрации.
+     * @return Объект Metrics, содержащий результаты анализа с учетом фильтрации по ресурсам.
+     */
+    public Metrics analyze(List&lt;NginxLog&gt; logs, Map&lt;String, String&gt; filters) {
+<span class="fc" id="L52">        return analyzeLogsWithResourceFilter(logs.stream(), filters);</span>
+    }
+
+    /**
+     * Анализирует список логов Nginx с фильтрацией по ресурсам и временным рамкам.
+     *
+     * @param logs      Список логов Nginx для анализа.
+     * @param filters   Карта фильтров, где ключи представляют собой имена ресурсов,
+     *                  а значения — соответствующие условия фильтрации.
+     * @param startDate Дата начала фильтрации в формате &quot;yyyy-MM-dd&quot;.
+     * @param endDate   Дата окончания фильтрации в формате &quot;yyyy-MM-dd&quot;.
+     * @return Объект Metrics, содержащий результаты анализа с учетом обоих фильтров.
+     */
+    public Metrics analyze(List&lt;NginxLog&gt; logs, Map&lt;String, String&gt; filters, String startDate, String endDate) {
+<span class="fc" id="L66">        return analyzeLogsWithResourceAndDateFilter(logs.stream(), filters, startDate, endDate);</span>
+    }
+}
+
+
+
+
+
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

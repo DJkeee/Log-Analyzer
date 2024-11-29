@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>App.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java</a> &gt; <a href="index.source.html" class="el_package">backend.academy.app</a> &gt; <span class="el_source">App.java</span></div><h1>App.java</h1><pre class="source lang-java linenums">package backend.academy.app;
+
+import backend.academy.analyzer.ProcessingMode;
+import backend.academy.nginx.NginxLog;
+import java.util.List;
+import lombok.SneakyThrows;
+
+/**
+ * Класс {@code App} представляет собой основную точку входа в приложение.
+ * Он инициализирует логику приложения и управляет процессом анализа логов Nginx
+ * на основе заданных настроек.
+ */
+public final class App {
+    private final AppLogic logic;
+
+    /*
+     * @param settings настройки приложения, содержащие параметры для анализа логов
+     */
+<span class="nc" id="L19">    public App(AppSettings settings) {</span>
+<span class="nc" id="L20">        this.logic = new AppLogic(settings);</span>
+<span class="nc" id="L21">    }</span>
+
+    /**
+     * Запускает процесс анализа логов Nginx.
+     * &lt;p&gt;
+     * Метод читает логи, определяет режим обработки на основе настроек
+     * и вызывает соответствующий метод логики приложения для анализа логов.
+     */
+<span class="nc" id="L29">    @SneakyThrows</span>
+    public void run() {
+<span class="nc" id="L31">        List&lt;NginxLog&gt; lines = logic.readNginxLogs();</span>
+<span class="nc" id="L32">        ProcessingMode mode = logic.processingMode();</span>
+
+<span class="nc bnc" id="L34" title="All 4 branches missed.">        switch (mode) {</span>
+            case TIME_AND_FILTER:
+<span class="nc" id="L36">                logic.runWithTimeAndFilter(lines);</span>
+<span class="nc" id="L37">                break;</span>
+            case FILTER:
+<span class="nc" id="L39">                logic.runWithFilter(lines);</span>
+<span class="nc" id="L40">                break;</span>
+            case TIME:
+<span class="nc" id="L42">                logic.runWithTime(lines);</span>
+<span class="nc" id="L43">                break;</span>
+            default:
+<span class="nc" id="L45">                logic.runWithoutFilters(lines);</span>
+                break;
+        }
+<span class="nc" id="L48">    }</span>
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

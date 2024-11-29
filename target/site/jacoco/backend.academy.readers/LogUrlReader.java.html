@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LogUrlReader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">java</a> &gt; <a href="index.source.html" class="el_package">backend.academy.readers</a> &gt; <span class="el_source">LogUrlReader.java</span></div><h1>LogUrlReader.java</h1><pre class="source lang-java linenums">package backend.academy.readers;
+
+import backend.academy.nginx.NginxLog;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import static backend.academy.config.ErrorMessages.ERROR_READING_LOGS_MESSAGE;
+import static backend.academy.config.ErrorMessages.INVALID_URL_MESSAGE;
+
+/**
+ * Класс LogUrlReader предназначен для чтения логов Nginx из заданных URL-адресов.
+ * Он наследует функциональность абстрактного класса AbstractLogReader.
+ */
+<span class="nc" id="L24">public final class LogUrlReader extends AbstractLogReader {</span>
+    private static final String URL_PATTERN = &quot;^(http|https)://.*&quot;;
+<span class="nc" id="L26">    private static final Logger LOGGER = Logger.getLogger(LogUrlReader.class.getName());</span>
+    private static final int OK = 200;
+
+    /**
+     * Читает логи Nginx из списка указанных URL-адресов.
+     *
+     * @param paths Список строк, представляющих URL-адреса для чтения логов.
+     * @return Список объектов NginxLog, содержащих прочитанные записи логов.
+     */
+    @Override
+    public List&lt;NginxLog&gt; readLogs(List&lt;String&gt; paths) {
+<span class="nc" id="L37">        List&lt;NginxLog&gt; nginxLogs = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L39" title="All 2 branches missed.">        for (String path : paths) {</span>
+            try {
+<span class="nc" id="L41">                List&lt;NginxLog&gt; logsFromLines = readLinesFromUrl(path);</span>
+<span class="nc" id="L42">                nginxLogs.addAll(logsFromLines);</span>
+<span class="nc" id="L43">            } catch (IOException | URISyntaxException e) {</span>
+<span class="nc" id="L44">                LOGGER.log(Level.WARNING, ERROR_READING_LOGS_MESSAGE + path, e);</span>
+<span class="nc" id="L45">            }</span>
+<span class="nc" id="L46">        }</span>
+
+<span class="nc" id="L48">        return nginxLogs;</span>
+    }
+
+    /**
+     * Читает строки логов из указанного URL-адреса.
+     *
+     * @param urlString URL-адрес, из которого будут читаться логи.
+     * @return Список объектов NginxLog, содержащих прочитанные записи логов.
+     * @throws IOException              Если произошла ошибка ввода-вывода при чтении данных.
+     * @throws URISyntaxException       Если указанный URL-адрес имеет неверный синтаксис.
+     * @throws IllegalArgumentException Если указанный URL-адрес не соответствует ожидаемому формату.
+     */
+    private List&lt;NginxLog&gt; readLinesFromUrl(String urlString) throws IOException, URISyntaxException {
+<span class="nc" id="L61">        URI uri = new URI(urlString);</span>
+
+<span class="nc bnc" id="L63" title="All 2 branches missed.">        if (!uri.toString().matches(URL_PATTERN)) {</span>
+<span class="nc" id="L64">            throw new IllegalArgumentException(INVALID_URL_MESSAGE + urlString);</span>
+        }
+
+<span class="nc" id="L67">        try (CloseableHttpClient httpClient = HttpClients.createDefault();</span>
+<span class="nc" id="L68">             BufferedReader reader = new BufferedReader(</span>
+                 new InputStreamReader(
+<span class="nc" id="L70">                     httpClient.execute(new HttpGet(uri))</span>
+<span class="nc" id="L71">                         .getEntity()</span>
+<span class="nc" id="L72">                         .getContent(),</span>
+                     StandardCharsets.UTF_8))) {
+
+<span class="nc" id="L75">            int statusCode = httpClient.execute(new HttpGet(uri)).getStatusLine().getStatusCode();</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">            if (statusCode != OK) {</span>
+<span class="nc" id="L77">                throw new IOException(ERROR_READING_LOGS_MESSAGE + urlString + &quot; Код ответа: &quot; + statusCode);</span>
+            }
+
+<span class="nc" id="L80">            List&lt;NginxLog&gt; nginxLogList = new ArrayList&lt;&gt;();</span>
+            String line;
+<span class="nc bnc" id="L82" title="All 2 branches missed.">            while ((line = reader.readLine()) != null) {</span>
+<span class="nc" id="L83">                NginxLog nginxLine = convertLineToNginx(line);</span>
+<span class="nc" id="L84">                nginxLogList.add(nginxLine);</span>
+<span class="nc" id="L85">            }</span>
+<span class="nc" id="L86">            return nginxLogList;</span>
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
