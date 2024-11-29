@@ -17,12 +17,12 @@
 • --filter: Поле для фильтрации. Доступные поля: ipAddress, userIdentifier, userId, timestamp, requestMethod, resource, httpVersion, statusCode, responseSize.
 • --format: Формат отчета. Доступные форматы: adoc (по умолчанию), markdown.
 
-Пример вызова программы в консоли IDEA(для https/http):
+Пример вызова программы через CLI(для https/http):
 --path https://raw.githubusercontent.com/elastic/examples/master/Common%20Data%20Formats/nginx_logs/nginx_logs 
 --filter resource-/downloads/product_1 
 --from "10/May/2015:08:05:32 +0000" --to "30/May/2015:08:05:32 +0000"
 
-Пример вызова программы в консоли IDEA(для файловой дирректории)
+Пример вызова программы через CLI(для файловой дирректории)
 --path src/main/java/backend/academy/Files
 --filter resource-/downloads/product_1 --from "10/May/2015:08:05:32 +0000" --to "30/May/2015:08:05:32 +0000"
 
